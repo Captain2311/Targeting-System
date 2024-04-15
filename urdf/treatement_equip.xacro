@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="treatement_equip">
+
+  <link name="base_footprint"/>
+
+  <link name="base_link">
+    <inertial>
+        <origin
+          xyz="-0.00394141808918595 0.0171036303382102 0.0547408845032822"
+          rpy="0 0 0" />
+        <mass
+          value="0.0294734098444175" />
+        <inertia
+          ixx="4.76394404449093E-06"
+          ixy="-2.79739453844788E-13"
+          ixz="-1.36431165613198E-13"
+          iyy="4.91040634718246E-06"
+          iyz="-1.92691774861277E-08"
+          izz="1.70457014400278E-06" />
+    </inertial>
+    <visual>
+        <origin
+          xyz="0.0042 0.0645 0.0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://treatement_cv/meshes/base_link.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.227450980392157 0.227450980392157 0.227450980392157 1" />
+        </material>
+    </visual>
+    <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://treatement_cv/meshes/base_link.STL" />
+        </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_footprint_to_base_joint" type="fixed">
+    <origin
+      xyz="0 0 0.25"
+      rpy="0 3.141592653589793 0" />
+    <parent
+      link="base_footprint" />
+    <child
+      link="base_link" />
+  </joint>
+
+  <link name="shoulder_link">
+    <inertial>
+        <origin
+          xyz="0.000437359115628169 0.0120183767154998 0.0051127992025653"
+          rpy="0 0 0.06045" />
+        <mass
+          value="0.0461971155642295" />
+        <inertia
+          ixx="5.62085958159556E-06"
+          ixy="-1.35468421184193E-13"
+          ixz="-1.92691846480155E-08"
+          iyy="1.18684212659114E-05"
+          iyz="5.35655089902047E-07"
+          izz="1.03961311052542E-05" />
+    </inertial>
+    <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0.06045" />
+        <geometry>
+          <mesh
+            filename="package://treatement_cv/meshes/shoulder_link.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.227450980392157 0.227450980392157 0.227450980392157 1" />
+        </material>
+    </visual>
+    <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0.06045" />
+        <geometry>
+          <mesh
+            filename="package://treatement_cv/meshes/shoulder_link.STL" />
+        </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_to_shoulder_joint" type="continuous">
+    <origin
+      xyz="0.0 0.0 0.041446"
+      rpy="1.5707963267949 0.0 0.0" />
+    <parent
+      link="base_link" />
+    <child
+      link="shoulder_link" />
+    <axis
+      xyz="0 1 0" />
+    <!-- <limit lower="-2.35619449" upper="2.35619449" effort="100" velocity="1"/> -->
+  </joint>
+
+
+  <link name="holder_link">
+    <inertial>
+      <origin
+        xyz="-0.00506999999999978 -0.0294559964301713 6.93889390390723E-18"
+        rpy="0 0 0" />
+      <mass
+        value="0.0213372016014766" />
+      <inertia
+        ixx="8.8721565760487E-06"
+        ixy="-1.74171149779166E-20"
+        ixz="3.13253297973832E-21"
+        iyy="1.3390588906091E-05"
+        iyz="-3.12105584873914E-21"
+        izz="2.01646770189564E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://treatement_cv/meshes/holder_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.894117647058823 0.913725490196078 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://treatement_cv/meshes/holder_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="shoulder_to_holder_joint" type="continuous">
+    <origin
+      xyz="0.0103499999999603 0.0147700000000001 0"
+      rpy="1.5707963267949 1.5707963267949 0" />
+    <parent
+      link="shoulder_link" />
+    <child
+      link="holder_link" />
+    <axis
+      xyz="1 0 0" />
+    <!-- <limit lower="-2.35619449" upper="2.35619449" effort="100" velocity="1"/> -->
+  </joint>
+
+  <link name="laser_link">
+    <inertial>
+      <origin
+        xyz="0 0.00238155032891173 -0.0023930370283283"
+        rpy="0 3.141592653589793 0" />
+      <mass
+        value="0.000771725491366377" />
+      <inertia
+        ixx="4.14600743405254E-08"
+        ixy="4.74659499937655E-24"
+        ixz="-1.3414623869494E-23"
+        iyy="4.68865669540154E-08"
+        iyz="5.05200453885892E-09"
+        izz="1.2322327296653E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 3.141592653589793 0" />
+      <geometry>
+        <mesh
+          filename="package://treatement_cv/meshes/laser_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.19607843137255 0.13333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 3.141592653589793 0" />
+      <geometry>
+        <mesh
+          filename="package://treatement_cv/meshes/laser_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="holder_to_laser_joint" type="fixed">
+    <origin
+      xyz="-0.0330700000000001 -0.0259 0.00550000000000014"
+      rpy="1.5707963267949 -1.5707963267949 0" />
+    <parent
+      link="holder_link" />
+    <child
+      link="laser_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

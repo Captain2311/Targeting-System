@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="model" />
+   <!-- <param name="robot_description" command="xacro '$(find treatement_cv)/urdf/treatement_equip.xacro'"/> -->
+    <param name="robot_description" textfile="$(find treatement_cv)/urdf/my_integ.urdf"/> 
+    <!-- <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" /> -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+        <param name="publish_frequency" type="double" value="10.0" />
+    </node>
+   <node name="weed_frame_broadcaster" pkg="treatement_cv" type="weed_frame_broadcaster.py" output="screen"/> 
+   <node name="treatement_equip" pkg="treatement_cv" type="treatement_equip.py" output="screen"/>
+   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find treatement_cv)/rviz/treatement_equip.rviz" />
+   <!--<include file="$(find openni_launch)/launch/openni.launch"/>-->
+   <node name="detect_green" pkg="treatement_cv" type="detect_green.py"/>
+   <node name="weed_real_pose" pkg="treatement_cv" type="weed_real_pose"/>
+
+</launch>

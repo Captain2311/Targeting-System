@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="shooting_equip">
+    <!-- Motor 1 and 2 variables w= width, l= length, b= breadth -->
+    <xacro:property name="w" value="0.05"/> 
+    <xacro:property name="b" value="0.05"/>
+    <xacro:property name="l" value="0.08"/>
+    <!-- base dimensions -->
+    <xacro:property name="radius" value="0.1"/> 
+    <xacro:property name="thickness" value="0.02"/> 
+    <xacro:property name="height" value="0.4"/>
+    <!-- dummy link for rviz -->
+    <link name="base_footprint"/>
+    <!--_______Links ______-->
+    <!-- base link -->
+    <link name="base">
+        <visual>
+            <geometry>
+                <cylinder length="${thickness}" radius="${radius}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
+   </link>
+   <!-- shoulder motor -->
+   <link name="shoulder_motor">
+        <visual>
+            <geometry> 
+                <box size="${w} ${b} ${l}"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+    <!-- elbow motor -->
+   <link name="elbow_motor">
+        <visual>
+            <geometry> 
+                <box size="${w} ${b} ${l}"/>
+            </geometry>
+            <material name="">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+    <!-- _______Joints________ -->
+    <!-- base_footprint to base joint -->
+    <joint name="base_footprint_to_base" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base"/>
+        <origin xyz="0.0 0.0 ${height}" rpy="0.0 0.0 0.0"/>
+    </joint>
+    <!-- base to shoulder (motor 1) joint -->
+    <joint name="base_to_shoulder" type="continuous">
+        <parent link="base"/>
+        <child link="shoulder_motor"/>
+        <origin xyz="0.0 0.0 ${-l/2}" rpy="0.0 0.0 0.0"/>
+        <axis xyz="0.0 0.0 1.0"/>
+    </joint>    
+     <!-- shoulder to elbow (motor 1 to motor 2) joint -->
+     <joint name="shoulder_to_elbow" type="continuous">
+        <parent link="shoulder_motor"/>
+        <child link="elbow_motor"/>
+        <origin xyz="${w} 0.0 ${-l/2}" rpy="0.0 0.0 0.0"/>
+        <axis xyz="1.0 0.0 0.0"/>
+    </joint>    
+</robot>

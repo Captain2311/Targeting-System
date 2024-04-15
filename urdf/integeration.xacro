@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="my_integ">
+
+  <!-- Include the kinect camera URDF file -->
+  <xacro:include filename="kinect.xacro"/>
+
+  <!-- Include the treatement equip URDF file -->
+  <xacro:include filename="treatement_equip.xacro"/>
+
+  <!-- Define the position of the equip with respect to the camera -->
+
+  <xacro:kinect xyz="0 0 -0.05" rpy="0 3.141592653589793 3.141592653589793" parent_frame="base_link" />
+
+</robot>
