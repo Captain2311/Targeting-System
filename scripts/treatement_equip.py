@@ -11,7 +11,7 @@ def shooting_joint_state_publisher():
     shoulder_pitch = 0.0
     holder_roll = 0.0
     
-    rate = rospy.Rate(20.0)  # 10Hz
+    rate = rospy.Rate(10.0)  # Hz
 
     while not rospy.is_shutdown():
         
@@ -25,9 +25,9 @@ def shooting_joint_state_publisher():
         pub.publish(joint_state)
         
         try:            
-            (base_to_weed_trans, base_to_weed_rot) = listener.lookupTransform('base_link', 'weed_link', rospy.Time(0))
-            (shoulder_to_weed_trans, shoulder_to_weed_rot) = listener.lookupTransform('shoulder_link', 'weed_link', rospy.Time(0))
-            (shoulder_to_laser_trans, shoulder_to_laser_rot) = listener.lookupTransform('shoulder_link', 'laser_link', rospy.Time(0))           
+            (base_to_weed_trans, _) = listener.lookupTransform('base_link', 'weed_link', rospy.Time(0))
+            (shoulder_to_weed_trans, _) = listener.lookupTransform('shoulder_link', 'weed_link', rospy.Time(0))
+            (shoulder_to_laser_trans, _) = listener.lookupTransform('shoulder_link', 'laser_link', rospy.Time(0))           
             
         except tf.LookupException as e:
             rospy.loginfo('TF2 lookup error: {}'.format(str(e)))

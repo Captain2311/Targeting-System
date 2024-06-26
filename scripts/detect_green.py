@@ -1,10 +1,13 @@
 #!/usr/bin/env python3 
+# -*- coding: utf-8 -*-
 import sys
 import rospy
 import cv2
 from sensor_msgs.msg import Image
 from std_msgs.msg import Int16MultiArray
 from cv_bridge import CvBridge, CvBridgeError
+from ultralytics import YOLO
+from KalmanFilter import KalmanFilter
 import numpy as np
 
 class weed_detector_cv:
@@ -12,15 +15,18 @@ class weed_detector_cv:
         self.bridge = CvBridge()
         self.x = 0
         self.y = 0
-        self.z = 0 
         
+        self.model = YOLO('best.pt') 
+          
         self.rgb_sub = rospy.Subscriber("/camera/rgb/image_color", Image, self.rgbCallback)
-        self.depth_sub = rospy.Subscriber("/camera/depth/image_raw", Image, self.depthCallback)
         self.point_pub = rospy.Publisher("/weed_xy", Int16MultiArray, queue_size= 10)
+        self.KF = KalmanFilter(0.1, 1, 1, 1, 0.01, 0.01)
         
     def rgbCallback(self, data):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            results = self.model.track(cv_image, persist= True, classes = [0,1,2], conf= 0.2)
+            
         except CvBridgeError as e:
             print(e)
         
@@ -28,48 +34,32 @@ class weed_detector_cv:
         self.x = 0
         self.y = 0
         
-        cv_image = self.get_keypoints(cv_image)
-        
-        cv2.imshow("Image window", cv_image)
-        #rospy.loginfo("x: %.2f, y: %.2f, z: %.2f", self.x, self.y, self.z)
+        annotated_image = results[0].plot()
+        for result in results:
+            for detection in result.boxes.data:
+                if len(detection) == 7:
+                    plant = int(detection[6])  # Class ID is in the 6th position (index 6)
+                    if plant == 2:
+                        x1, y1, x2, y2 = detection[:4]
+                        cx = int((x1 + x2) / 2)
+                        cy = int((y1 + y2) / 2)
+                        pt = np.array([[cx],[cy]])
+
+                        predicted_state= self.KF.predict()
+                        cv2.circle(annotated_image, [int(predicted_state[0, 0]),int(predicted_state[1, 0])], 5, (255,0, 0), 4)
+                        estimated_state = self.KF.update(pt) 
+                        cv2.circle(annotated_image, [int(estimated_state[0, 0]),int(estimated_state[1, 0])], 7, (0, 0, 255), 4)
+                        self.x = int(predicted_state[0, 0])
+                        self.y = int(predicted_state[1, 0])
+                        cv2.circle(annotated_image, (cx, cy), 10, (0, 255, 0), 2)
+                    
+        cv2.imshow("Weed Tracking", annotated_image)
         cv2.waitKey(3)
+        #cv2.waitKey(3)
         if self.x and self.y != 0:
             point_msg = Int16MultiArray()
             point_msg.data = [self.x, self.y]
             self.point_pub.publish(point_msg)
-            
-        
-    def depthCallback(self, data):
-        try:
-            depth_image = self.bridge.imgmsg_to_cv2(data,"16UC1")
-        except CvBridgeError as e:
-                print(e)
-        self.z = depth_image[self.y, self.x] 
-        
-    def get_keypoints(self, img):
-        # Convert the image to grayscale
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        # Apply Gaussian blur to the grayscale image
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-
-        circles = cv2.HoughCircles(blurred,cv2.HOUGH_GRADIENT,1,20, param1=70,param2=30,minRadius=20,maxRadius=45)
-        
-        if circles is not None:
-            
-            circles = np.uint16(np.around(circles))
-            
-            for i in circles[0,:]:
-                # draw the outer circle
-                cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),2)
-                # draw the center of the circle
-                cv2.circle(img,(i[0],i[1]),2,(0,0,255),3)
-                
-                self.x = (i[0])
-                self.y = (i[1])
-            cv2.putText(img, f'z: {self.z:.2f}',(self.x, self.y),cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-        
-        return img
             
 #-----------------------------------------------------------------------------------------------------------------          
 

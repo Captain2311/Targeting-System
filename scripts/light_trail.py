@@ -12,10 +12,10 @@ marker = Marker()
 marker.header.frame_id = "laser_link"
 marker.type = Marker.LINE_LIST
 marker.action = Marker.ADD
-marker.scale.x = 0.01  # Line width
-marker.color.r = 1.0
-marker.color.g = 0.0
-marker.color.b = 0.0
+marker.scale.x = 0.005  # Line width
+marker.color.r = 0.0
+marker.color.g = 1.0
+marker.color.b = 1.0
 marker.color.a = 1.0
 
 # Define line points
@@ -47,6 +47,7 @@ while not rospy.is_shutdown():
     point2.x = laser_to_weed_trans[0]
     point2.y = laser_to_weed_trans[1]
     point2.z = laser_to_weed_trans[2]
+    marker.points.clear()
     marker.points.append(point1)
     marker.points.append(point2)
     marker_pub.publish(marker)

@@ -35,8 +35,6 @@ class WeedRealPose{
                 pose_msg.y = weed_pose.y;
                 pose_msg.z = weed_pose.z;
                 pose_pub.publish(pose_msg);
-                ROS_INFO("Target point at (%lf, %lf, %lf)", weed_pose.x, weed_pose.y, weed_pose.z);
-                ROS_INFO("Image point at (%d, %d)", x, y);
             } 
             catch (std::exception &e) {
                 ROS_ERROR("Error: %s", e.what());

@@ -9,6 +9,7 @@
 
   <!-- Define the position of the equip with respect to the camera -->
 
-  <xacro:kinect xyz="0 0 -0.05" rpy="0 3.141592653589793 3.141592653589793" parent_frame="base_link" />
+  <xacro:kinect xyz="0.08 0.09 -0.18" rpy="0 3.141592653589793 -1.57079632679" parent_frame="base_link" /> 
+  <!-- <xacro:kinect xyz="0.15 0.09 -0.18" rpy="0 3.53429 -1.57079632679" parent_frame="base_link" /> -->
 
 </robot>
